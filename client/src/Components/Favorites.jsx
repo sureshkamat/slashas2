@@ -6,7 +6,7 @@ export const Favorites = () => {
 
     const handleData = async () => {
         try {
-            const response = await axios.get(`http://localhost:8081/favorites`);
+            const response = await axios.get(`http://localhost:8080/favorites`);
             console.log(response);
             setData(response.data);
         } catch (error) {
