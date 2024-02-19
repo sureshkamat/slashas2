@@ -1,9 +1,9 @@
 const express = require('express');
 const { Client } = require('pg');
-
+const cors = require('cors'); 
 const app = express();
 const port = 8080;
-
+app.use(cors());
 const client = new Client({
   user: 'postgres', 
   host: 'localhost',
@@ -47,15 +47,18 @@ app.get("/quotes", async (req, res) => {
 
 
 app.post("/quotes", async (req, res) => {
-  try {
-    const { author, content } = req.body;
-    const result = await client.query('INSERT INTO quote (author, content) VALUES ($1, $2) RETURNING *', [author, content]);
-    res.json({ msg: "Added", status: true, data: result.rows[0] });
-  } catch (err) {
-    console.error('Error adding quote:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    try {
+        const { author, content } = req.body;
+        console.log("Received request to add quote:", { author, content }); 
+        const result = await client.query('INSERT INTO quote (author, content) VALUES ($1, $2) RETURNING *', [author, content]);
+        
+        res.json({ msg: "Added", status: true, data: result.rows[0] });
+    } catch (err) {
+        console.error('Error adding quote:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
+
 
 
 app.listen(port, () => {
